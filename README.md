@@ -1,9 +1,5 @@
 Demo link:https://drive.google.com/file/d/1yesxQ8I2n_7wBrn7IJfM9kFvO3lFixXp/view?usp=sharing
-
-Set up:
-
-1. yarn install
-2. yarn dev
+Hosted at https://stone-paper-scissor-4tdw.vercel.app/
 
 This project uses the following tech stack:
 
