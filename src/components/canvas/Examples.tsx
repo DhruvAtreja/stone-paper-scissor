@@ -16,7 +16,8 @@ export const Blob = ({ route = '/', ...props }) => {
       onClick={() => router.push(route)}
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
-      {...props}>
+      {...props}
+    >
       <sphereGeometry args={[1, 64, 64]} />
       <MeshDistortMaterial roughness={0.5} color={hovered ? 'hotpink' : '#1fb2f5'} />
     </mesh>
@@ -65,4 +66,13 @@ export function Dog(props) {
   const { scene } = useGLTF('/dog.glb')
 
   return <primitive object={scene} {...props} />
+}
+
+export function Rock(props) {
+  const { nodes, materials } = useGLTF('/rock.glb')
+  return (
+    <group {...props} dispose={null}>
+      <mesh geometry={nodes.Object_2.geometry} material={materials['rock-lowres']} />
+    </group>
+  )
 }
