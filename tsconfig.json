@@ -2,17 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "app/*",
-        "src/*"
-      ]
+      "@/*": ["app/*", "src/*"],
     },
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -27,17 +20,16 @@
     "resolveJsonModule": true,
     "plugins": [
       {
-        "name": "next"
-      }
-    ]
+        "name": "next",
+      },
+    ],
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/components/canvas/ResultCanvas/ComputerChoiceCanvas.panel",
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"],
 }
