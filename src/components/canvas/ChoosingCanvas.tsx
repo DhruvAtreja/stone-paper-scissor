@@ -1,14 +1,12 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useCallback, Suspense, useState, useRef, useEffect } from 'react'
+import { useCallback, Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { useAudio } from '@/hooks/useAudio'
 import Loader from '@/components/Loader'
 import { Box } from '@react-three/flex'
-import { MODELS } from '@/page'
-import { GAME_STATES } from '@/page'
+import { MODELS, GAME_STATES } from '@/Game'
 
 const Rock = dynamic(() => import('@/components/canvas/Rock'), { ssr: false })
 const Paper = dynamic(() => import('@/components/canvas/Paper'), { ssr: false })
@@ -18,9 +16,8 @@ export const ChoosingCanvas = ({
   selectedModel,
   setSelectedModel,
   setGameState,
-  setIsSoundPlaying,
 }: {
-  selectedModel: string
+  selectedModel: 'rock' | 'paper' | 'scissors' | null
   setSelectedModel: (model: string) => void
   setGameState: (state: string) => void
   setIsSoundPlaying: (isPlaying: boolean) => void

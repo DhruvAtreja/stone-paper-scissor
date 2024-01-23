@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect } from 'react'
 
-export const useAudio = ({ url, isPlaying }) => {
+export const useAudio = ({ url, isPlaying }: { url: string; isPlaying: boolean }) => {
   if (typeof window === 'undefined') return
   const audioRef = useRef(new Audio(url))
   audioRef.current.loop = true

@@ -1,5 +1,4 @@
-import { GAME_STATES } from '@/page'
-import { GAME_RESULT } from '@/page'
+import { GAME_RESULT, GAME_STATES } from '@/Game'
 
 export const Header = ({
   gameState,
@@ -12,10 +11,10 @@ export const Header = ({
   roundCount,
   resetGame,
 }: {
-  gameState: string
+  gameState: 'choosing' | 'result' | null
   setGameState: (state: string) => void
-  gameResult: string
-  setIsSoundPlaying: any
+  gameResult: 'win' | 'lose' | 'draw' | null
+  setIsSoundPlaying: Function
   isSoundPlaying: boolean
   winCount: number
   loseCount: number

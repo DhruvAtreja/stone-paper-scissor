@@ -1,24 +1,21 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { useCallback, Suspense, useState, useRef, useEffect, useMemo } from 'react'
+import { Suspense, useState, useEffect, useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import Loader from '@/components/Loader'
-import { Box } from '@react-three/flex'
-import { GAME_RESULT, MODELS } from '@/page'
+import { GAME_RESULT } from '@/Game'
 import { UserChoicePanel } from './UserChoicePanel'
 import { ComputerChoicePanel } from './ComputerChoicePanel'
-import { Header } from '../../Header'
 
 export const ResultCanvas = ({
   selectedModel,
   computerModel,
   gameResult,
 }: {
-  selectedModel: string
-  computerModel: string
-  gameResult: string
+  selectedModel: 'rock' | 'paper' | 'scissors' | null
+  computerModel: 'rock' | 'paper' | 'scissors' | null
+  gameResult: 'win' | 'lose' | 'draw' | null
 }) => {
   const backgroundGradient = useMemo(() => {
     switch (gameResult) {
@@ -31,13 +28,28 @@ export const ResultCanvas = ({
     }
   }, [gameResult])
 
+  const [width, setWidth] = useState<number>(2000)
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth)
+  }
+  useEffect(() => {
+    setWidth(window.innerWidth)
+    window.addEventListener('resize', handleWindowSizeChange)
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange)
+    }
+  }, [])
+
+  const isMobile = width <= 768
+
   return (
     <div className={backgroundGradient}>
       <Canvas
         camera={{
           near: 0.1,
           far: 50,
-          position: [0.5, -2, 9],
+          position: isMobile ? [0.5, -0, 25] : [0.5, -2, 9],
         }}
         className='w-full h-screen bg-transparent'
       >
@@ -45,8 +57,8 @@ export const ResultCanvas = ({
           <OrbitControls />
           <ambientLight intensity={1.5} />
           <pointLight position={[1, 0, 1]} intensity={10} />
-          <UserChoicePanel model={selectedModel} />
-          <ComputerChoicePanel model={computerModel} />
+          <UserChoicePanel model={selectedModel} isMobile={isMobile} />
+          <ComputerChoicePanel model={computerModel} isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>
