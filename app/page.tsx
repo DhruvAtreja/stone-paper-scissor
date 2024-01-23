@@ -1,29 +1,25 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Suspense, useCallback } from 'react'
+import { useCallback, Suspense, useState, useRef, useEffect } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
+import { useAudio } from '@/hooks/useAudio'
+import Loader from '@/components/Loader'
+
 const Rock = dynamic(() => import('@/components/canvas/Rock'), { ssr: false })
 const Paper = dynamic(() => import('@/components/canvas/Paper'), { ssr: false })
 const Scissors = dynamic(() => import('@/components/canvas/Scissors'), { ssr: false })
-const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
-
-import { useState, useRef, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Image, OrbitControls, Text, Float } from '@react-three/drei'
-import { Flex, Box, useReflow } from '@react-three/flex'
-
-// import useGame from './stores/useGame.js'
 
 const MODELS = {
   rock: 'rock',
   paper: 'paper',
   scissors: 'scissors',
 }
+
 export default function Game() {
   const [model, setModel] = useState(MODELS.rock)
-
-  const [limit, setLimit] = useState(null)
-
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false)
   const switchModel = useCallback(() => {
     const keys = Object.keys(MODELS)
     const index = keys.indexOf(model)
@@ -36,9 +32,7 @@ export default function Game() {
     return () => clearInterval(switchModelTimer)
   })
 
-  const rock = useRef()
-  const paper = useRef()
-  const scissors = useRef()
+  useAudio({ url: 'bgMusic.mp3', isPlaying: isSoundPlaying })
 
   const [hovered, setHovered] = useState(false)
 
@@ -52,49 +46,67 @@ export default function Game() {
     setHovered(false)
   }
 
+  const [activeModel, setActiveModel] = useState(null)
+
+  const handleClick = useCallback(
+    (model) => {
+      setIsSoundPlaying(true)
+    },
+    [isSoundPlaying],
+  )
+
+  useEffect(() => {
+    if (hovered) {
+      document.body.style.cursor = 'pointer'
+    } else {
+      document.body.style.cursor = 'default'
+    }
+  }, [hovered])
+
   return (
     <div className='w-screen h-screen bg-violet-100'>
       <Canvas
         camera={{
-          // fov: 45,
           near: 0.1,
           far: 50,
           position: [0, -5, 8],
         }}
-        className='w-1/2 h-screen bg-transparent'
+        className='w-full h-screen bg-transparent'
       >
-        <OrbitControls />
-        <ambientLight intensity={1.5} />
-        <pointLight position={[1, 0, 1]} intensity={10} />
+        <Suspense fallback={<Loader />}>
+          <OrbitControls />
+          <ambientLight intensity={1.5} />
+          <pointLight position={[1, 0, 1]} intensity={10} />
 
-        {model == MODELS.rock && (
-          <Rock
-            ref={rock}
-            position={[0, -3, 0]}
-            scale={[14, 14, 14]}
-            onPointerOver={handleHover}
-            onPointerOut={handleUnhover}
-          />
-        )}
-        {model == MODELS.paper && (
-          <Paper
-            ref={paper}
-            position={[0, -2, 0]}
-            scale={[2, 2, 2]}
-            rotation={[0, Math.PI / 4, 0]}
-            onPointerOver={handleHover}
-            onPointerOut={handleUnhover}
-          />
-        )}
-        {model == MODELS.scissors && (
-          <Scissors
-            ref={scissors}
-            position={[0, -2, 0]}
-            scale={[13, 13, 13]}
-            onPointerOver={handleHover}
-            onPointerOut={handleUnhover}
-          />
-        )}
+          {model == MODELS.rock && (
+            <Rock
+              position={[0, -3, 0]}
+              scale={[14, 14, 14]}
+              onPointerOver={handleHover}
+              onPointerOut={handleUnhover}
+              onClick={() => handleClick(MODELS.rock)}
+            />
+          )}
+          {model == MODELS.paper && (
+            <Paper
+              position={[0, -2, 0]}
+              scale={[2, 2, 2]}
+              rotation={[0, Math.PI / 4, 0]}
+              onPointerOver={handleHover}
+              onPointerOut={handleUnhover}
+              onClick={() => handleClick(MODELS.paper)}
+            />
+          )}
+          {model == MODELS.scissors && (
+            <Scissors
+              position={[0, -2, 0]}
+              scale={[13, 13, 13]}
+              onPointerOver={handleHover}
+              onPointerOut={handleUnhover}
+              onClick={() => handleClick(MODELS.scissors)}
+            />
+          )}
+        </Suspense>
       </Canvas>
     </div>
   )

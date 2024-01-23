@@ -2,13 +2,13 @@
 // Licensed under the GNU Affero General Public License v3.0.
 // https://www.gnu.org/licenses/gpl-3.0.html
 
-import { forwardRef, useRef } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 
-const Rock = forwardRef((props, ref) => {
+const Rock = (props) => {
   const { nodes, materials } = useGLTF('rock.glb')
-
+  console.log(props)
   const rock = useRef()
 
   useFrame((state, delta) => {
@@ -18,10 +18,7 @@ const Rock = forwardRef((props, ref) => {
   return (
     <group {...props} ref={rock} dispose={null}>
       <mesh
-        ref={ref}
         name='rock'
-        castShadow
-        receiveShadow
         geometry={nodes.Rock.geometry}
         material={materials.Stone}
         rotation={[-Math.PI / 2, 0, 0]}
@@ -29,8 +26,7 @@ const Rock = forwardRef((props, ref) => {
       />
     </group>
   )
-})
-
-export default Rock
+}
 
 useGLTF.preload('rock.glb')
+export default Rock
