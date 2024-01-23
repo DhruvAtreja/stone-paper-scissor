@@ -8,14 +8,24 @@ import { useAudio } from '@/hooks/useAudio'
 import Loader from '@/components/Loader'
 import { Box } from '@react-three/flex'
 import { MODELS } from '@/page'
+import { GAME_STATES } from '@/page'
 
 const Rock = dynamic(() => import('@/components/canvas/Rock'), { ssr: false })
 const Paper = dynamic(() => import('@/components/canvas/Paper'), { ssr: false })
 const Scissors = dynamic(() => import('@/components/canvas/Scissors'), { ssr: false })
 
-export const ChoosingCanvas = () => {
+export const ChoosingCanvas = ({
+  selectedModel,
+  setSelectedModel,
+  setGameState,
+  setIsSoundPlaying,
+}: {
+  selectedModel: string
+  setSelectedModel: (model: string) => void
+  setGameState: (state: string) => void
+  setIsSoundPlaying: (isPlaying: boolean) => void
+}) => {
   const [model, setModel] = useState(MODELS.rock)
-  const [isSoundPlaying, setIsSoundPlaying] = useState(false)
   const switchModel = useCallback(() => {
     const keys = Object.keys(MODELS)
     const index = keys.indexOf(model)
@@ -27,8 +37,6 @@ export const ChoosingCanvas = () => {
     const switchModelTimer = setInterval(switchModel, 1000)
     return () => clearInterval(switchModelTimer)
   })
-
-  useAudio({ url: 'bgMusic.mp3', isPlaying: isSoundPlaying })
 
   const [hovered, setHovered] = useState(false)
 
@@ -42,15 +50,10 @@ export const ChoosingCanvas = () => {
     setHovered(false)
   }
 
-  const [selectedModel, setSelectedModel] = useState(null)
-
-  const handleClick = useCallback(
-    (model) => {
-      // setIsSoundPlaying(true)
-      setSelectedModel(model)
-    },
-    [isSoundPlaying],
-  )
+  const handleClick = useCallback((model) => {
+    setSelectedModel(model)
+    setGameState(GAME_STATES.result)
+  }, [])
 
   useEffect(() => {
     if (hovered) {
@@ -61,24 +64,25 @@ export const ChoosingCanvas = () => {
   }, [hovered])
 
   return (
-    <div className='w-screen h-screen bg-violet-100'>
+    <div className='w-screen h-screen bg-transparent '>
       <Canvas
         camera={{
           near: 0.1,
           far: 50,
-          position: [0, -5, 8],
+          position: [0, -4, 8],
         }}
-        className='w-full h-screen bg-transparent'
+        className='w-full h-screen hover:bg-gradient-to-l bg-gradient-to-r from-green-500 via-blue-500 to-purple-600 '
+        z-index={10}
       >
         <Suspense fallback={<Loader />}>
           <OrbitControls />
           <ambientLight intensity={1.5} />
-          <pointLight position={[1, 0, 1]} intensity={10} />
+          <pointLight position={[1, -1, 3]} intensity={10} />
           <Box>
             {model == MODELS.rock && (
               <Rock
-                position={[0, -3, 0]}
-                scale={[14, 14, 14]}
+                position={[0, -3.5, 0]}
+                scale={[18, 18, 18]}
                 onPointerOver={handleHover}
                 onPointerOut={handleUnhover}
                 onClick={() => handleClick(MODELS.rock)}
@@ -86,8 +90,8 @@ export const ChoosingCanvas = () => {
             )}
             {model == MODELS.paper && (
               <Paper
-                position={[0, -2, 0]}
-                scale={[2, 2, 2]}
+                position={[0, -2.5, 0]}
+                scale={[3, 3, 3]}
                 rotation={[0, Math.PI / 4, 0]}
                 onPointerOver={handleHover}
                 onPointerOut={handleUnhover}
@@ -96,8 +100,8 @@ export const ChoosingCanvas = () => {
             )}
             {model == MODELS.scissors && (
               <Scissors
-                position={[0, -2.5, 0]}
-                scale={[13, 13, 13]}
+                position={[0, -3, 0]}
+                scale={[18, 18, 18]}
                 onPointerOver={handleHover}
                 onPointerOut={handleUnhover}
                 onClick={() => handleClick(MODELS.scissors)}
