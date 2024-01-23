@@ -82,8 +82,8 @@ export const Header = ({
         onClick={() => setIsSoundPlaying((isSoundPlaying) => !isSoundPlaying)}
         className='absolute z-10 rounded-[10px] p-3 hover:bg-white right-0 top-0 mt-5 mr-5 hover:cursor-pointer  '
       >
-        {!isSoundPlaying && <img src='/sound.svg' className='w-10 ' />}
-        {isSoundPlaying && <img src='/mute.svg' className='w-10 ' />}
+        {isSoundPlaying && <img src='/sound.svg' className='w-10 ' />}
+        {!isSoundPlaying && <img src='/mute.svg' className='w-10 ' />}
       </button>
     </>
   )
