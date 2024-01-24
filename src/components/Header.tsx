@@ -67,7 +67,7 @@ export const Header = ({
         )}
         {gameState == GAME_STATES.choosing && (
           <>
-            <img src='/logo.jpeg' className='w-1/5 rounded-[10px] object-cover  m-auto mt-[50px] ' />
+            <img src='/logo.jpeg' className='w-full sm:w-1/5 rounded-[10px] object-cover  m-auto mt-[50px] ' />
             <div className=' text-3xl font-bold text-center mt-[30px]  '>Pick Your Choice</div>
           </>
         )}
